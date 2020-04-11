@@ -1,0 +1,111 @@
+.content{
+width:800px; margin:0 auto; box-sizing: content-box;
+}
+.header{
+text-align:center; font-weight:bold; font-size:30px; height:50px; border-bottom:solid 1px #008;
+}
+.leftp{
+float: left; width:250px; box-sizing: border-box; padding-top:5px;
+font-size: 20px;
+border-right:solid 1px #008;
+height:auto;
+}
+
+.rightp{
+float: left; width:550px; padding-left:20px; box-sizing: border-box;  padding-top:10px;
+font-size:14px;
+
+
+}
+
+.subheader{
+	font-size:20px;
+	border-bottom:solid 1px #008;
+	padding-bottom:3px;
+}
+
+.btn_sellbuy{
+float:left; padding:10px;
+}
+
+.btn_lmenu{
+	cursor:hand;
+	margin:3px;
+}
+.btn_lmenu:hover{
+	background-color:#DDD;
+}
+
+.button{
+	cursor:hand;
+}
+
+.button:hover{
+	background-color:#DDD;
+}
+
+.button2{
+	border: solid 1px #008;
+	cursor:hand;
+	float:left;
+	height:auto;
+	margin-right:5px;
+	
+}
+
+.button2:hover{
+	background-color:#DDD;
+}
+
+
+.bord{
+	border: solid 1px #008;
+	margin:5px;
+}
+
+.sub_menu{
+	font-size: 16px;
+	padding-left:10px;
+}
+
+.item{
+	clear:both;
+	height:auto;
+	padding: 10px;
+}
+
+.smallzone{
+	float:left;
+	height:auto;
+	padding: 5px;
+	width:250px;
+	border:solid 1px #008;
+	margin: 5px;
+	box-sizing: border-box;
+}
+
+
+.placemess{
+	font-size:14px;
+	padding:5px;
+}
+
+
+.messtime{
+background-color:#DDD;
+font-size:14px;
+}
+
+.messfreetime{
+font-size:18px; font-weight: bold;
+}
+
+input:invalid {
+	background-color:#FEE;
+}
+
+body{
+	background-color:#F0F8FF;
+	font-family: Consolas, Arial;
+	font-size: 14px;
+}
