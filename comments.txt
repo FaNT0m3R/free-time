@@ -1,0 +1,14 @@
+db ===================
+sess : session(случайные цифры), sess2(md5), login, lastdata
+users: id, login, pass(в md5) ,email, badmin, bactiv, dataregistr, datalast,counter, name, family
+regkeys: code, login, data  (живут сутки)
+admmess: id, user(login), textmess, data, readed
+salles: id, timeStart, timeSize, skill, position, contacts, comments, state(новое, частично в исполнении, в исполнении)
+order: id, timeStart, timeSize, texts, why, contacts, comments, state
+exchange: id, timeStart,timeSize,sallesID,orderID
+
+осталолось:
+не добавил проверку суток
+не добавил дату последнего входа
+при удалении записей проверить всё с ней связанное
+автоматически удалять устаревшие записи при входе юзера
