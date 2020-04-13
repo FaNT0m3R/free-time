@@ -1,4 +1,4 @@
-<? 
+<?php
 include './core/func.php';
 session_start();
 
@@ -89,7 +89,7 @@ if ($table!=false){
 <div class="content">
 <div class="header"> Free time </div>
 <div class="leftp">
-	<div onclick="showBuySell()" class="btn_lmenu"> 	<?echo $login;?>	</div>
+	<div onclick="showBuySell()" class="btn_lmenu"> 	<?=$login;?>	</div>
 	<div onclick="showPurchased()" class="btn_lmenu"> 	Заказанное время</div>
 	<div onclick="showSold()" class="btn_lmenu">      	Моё свободное время</div>
 	<div onclick="showMess()" class="btn_lmenu">      	Дополнительно</div>
@@ -97,7 +97,7 @@ if ($table!=false){
 	<img src="imgs/clock.png" width="100%">
 </div>
 <div class="rightp">
-	<?
+	<?php
 	if ($startTab == '#sellbuy')
 		echo '<div id="sellbuy" style="display: block;">';
 	else
@@ -140,7 +140,7 @@ if ($table!=false){
 	
 	
 	
-	<?
+	<?php
 	if ($startTab == '#buytime')
 		echo '<div id="buytime" style="display: block;">';
 	else
@@ -148,8 +148,8 @@ if ($table!=false){
 	?>
 		<div>
 			<div class="subheader">Заказанное время</div>
-			<?
-			$table = $db->query("SELECT id,time,timeStart, timeEnd, texts,contacts FROM `order` WHERE login='".$login."';");
+			<?php
+			$table = $db->query("SELECT id,time,timeStart, timeEnd, texts,contacts FROM `orders` WHERE login='".$login."';");
 			if ($table!=false){
 			for ($i=0; $i<$table->num_rows; $i++){
 				$line = $table->fetch_array();
@@ -172,7 +172,7 @@ if ($table!=false){
 		</div>
 	</div>
 	
-	<?
+	<?php
 	if ($startTab == '#soldtime')
 		echo '<div id="soldtime" style="display: block;">';
 	else
@@ -180,7 +180,7 @@ if ($table!=false){
 	?>
 		<div style="padding-bottom:10px;">
 			<div class="subheader">Моё свободное время</div>
-			<?
+			<?php
 			$table = $db->query("SELECT id,time,timeStart, timeEnd, skill, position,contacts FROM `salles` WHERE login='".$login."';");
 			if ($table!=false){
 			for ($i=0; $i<$table->num_rows; $i++){
@@ -207,7 +207,7 @@ if ($table!=false){
 			?>
 		</div>
 	</div>
-	<?
+	<?php
 	if ($startTab == '#admmess')
 		echo '<div id="admmess" style="display: block;">';
 	else
@@ -220,9 +220,9 @@ if ($table!=false){
 			<form action="index.php" method="POST">
 			<textarea rows=6 cols=50 name="textmess"></textarea><br>
 			<input type='submit' value="Отправить" name="message"></input>
-			<? if($startTab == '#admmess'){ ?>
+			<?php if($startTab == '#admmess'){ ?>
 				<b>Отправлено</b>
-			<?}?>
+			<?php } ?>
 			</form>
 		</div>
 		<div class="subheader">Сменить пароль </div>
@@ -233,7 +233,7 @@ if ($table!=false){
 </div>
 
 <script>
-<?
+<?php
 echo 'var oldplace = "'.$startTab.'";';
 ?>
 var oldplace2 = "#placebuy";
@@ -242,7 +242,7 @@ var oldplace2 = "#placebuy";
 <script language="javascript" src="js/jquery-3.0.0.js"> </script>
 </body>
 </html>
-<?
+<?php
 }
 $db->close();
 

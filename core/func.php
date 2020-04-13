@@ -1,9 +1,8 @@
-<?
+<?php
 function sendMessageMail($to, $from, $title, $message)
  {
    //Адресат с отправителем
-   //$to = $to;
-   //$from = $from;
+
    
    //Формируем заголовок письма
    $subject = $title;
@@ -17,9 +16,9 @@ function sendMessageMail($to, $from, $title, $message)
 
    //Отправляем данные на ящик админа сайта
    if(!mail($to, $subject, $message, $headers))
-      return 'Ошибка отправки письма!';  
+      return false;  
    else  
-      return true;  
+      return true;
  }
  
  

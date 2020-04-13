@@ -1,4 +1,4 @@
-<?
+<?php
 /*выбор продавцов*/
 
 /*if (!isset($_POST["idorder"]))
@@ -38,7 +38,7 @@ if (isset($_GET['selsel']))
 </head>
 <body>
 
-<?
+<?php
 	$ordtable = $db->query("SELECT timeStart,timeEnd,state FROM `order` WHERE id=".$_GET['ordid'].";");
 	if ($ordtable==false){
 		$db->close();exit;}
@@ -54,7 +54,7 @@ if (isset($_GET['selsel']))
 		$db->query("UPDATE `salles` SET state=0 WHERE id=".$line['sallesid'].";");
 	}
 	$db->query("DELETE FROM `exchange` WHERE orderid=".$_GET['ordid'].";");
-	$db->query("UPDATE `order` SET state=0 WHERE id=".$_GET['ordid'].";");
+	$db->query("UPDATE `orders` SET state=0 WHERE id=".$_GET['ordid'].";");
 	foreach ($_GET as $key => $value)
 	{ 
 		if ($value== "on")
@@ -102,7 +102,7 @@ if (isset($_GET['selsel']))
 			}
 			else
 				$state=1;
-			$db->query("UPDATE `order` SET state=".$state." WHERE id=".$_GET['ordid'].";");
+			$db->query("UPDATE `orders` SET state=".$state." WHERE id=".$_GET['ordid'].";");
 			
 			//заносим в текущие задачи
 			$db->query("INSERT INTO `exchange` (`timeStart`,`timeEnd`,`sallesid`,`orderid`)
@@ -119,7 +119,7 @@ if (isset($_GET['selsel']))
 </body>
 </html>
 
-<?
+<?php
 	exit;
 }
 /**************  основной диалог  ************************************************************/
@@ -136,7 +136,7 @@ if (isset($_GET['selsel']))
 <div class="content">
 <div class="header"> Free time </div>
 <div style="border:1px solid black; margin: 10px;">
-<?
+<?php
 	$order = $db->query("SELECT login,time,timeStart,timeEnd,texts,contacts,comments FROM `order` WHERE id=".$_GET["idorder"].";");
 	if ($order!=false)
 	{
@@ -149,7 +149,7 @@ if (isset($_GET['selsel']))
 
 <form action="sels.php">
 <div >
-<?
+<?php
 	include 'func.php';
 	
 	if (!isset($_POST['all_sellers']))
@@ -205,7 +205,7 @@ if (isset($_GET['selsel']))
 ?>
 
 </div>
-<?
+<?php
 echo '<input type="hidden" name="ordid" value="'.$_GET['idorder'].'">';
 ?>
 <input type="submit" value="Продолжить" name='selsel'>
@@ -219,7 +219,7 @@ echo '<input type="hidden" name="ordid" value="'.$_GET['idorder'].'">';
 
 
 
-<?
+<?php
 $db->close();
 
 

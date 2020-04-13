@@ -1,35 +1,53 @@
-<?
+<?php
 
 if ($secur != true)
 	exit;
 
-	
+if (isset($_GET['query']))
+	$query = $_GET['query'];
+else
+	$query = "";
+
+
+if (isset($_GET['id']))
+	$id = $_GET['id'];
+else
+	$id = "";
+
+if (isset($_GET['newpass']))
+	$newpass = $_GET['newpass'];
+else
+	$newpass = "";
+
 /************************************************************************/
 /**  admin **************************************************************/
 /************************************************************************/
 if ($user == 2) 
 {
 
-if ($_GET['query']=='cancelOrder')    //ajax
+
+
+
+if ($query=='cancelOrder')    //ajax
 {	/*удалить запись order-заказ времени*/
-	$id = intval($_GET['id']);
+	$id = intval($id);
 	$db->query("DELETE FROM `order` WHERE id=".$id.";");
 	exit;
 }
 
 	
-if ($_GET['query']=='removeMess')    //ajax
+if ($query=='removeMess')    //ajax
 {
-	$id = intval($_GET['id']);
+	$id = intval($id);
 	/*удалить сообщение*/
 	$db->query("DELETE FROM `admmess` WHERE id=".$id.";");
 	exit;
 }
 
 
-if ($_GET['query']=='setPass')		//ajax
+if ($query=='setPass')		//ajax
 {
-	$rpass = $_GET['newpass'];
+	$rpass = $newpass;
 	for ($i=0; $i<strlen($rpass); $i++)
 	{
 		if (testchar2($rpass[$i])==false)
@@ -45,9 +63,9 @@ if ($_GET['query']=='setPass')		//ajax
 }
 
 
-if ($_GET['query']=='setUserPass')		//ajax
+if ($query=='setUserPass')		//ajax
 {	
-	$rpass = $_GET['newpass'];
+	$rpass = $newpass;
 	for ($i=0; $i<strlen($rpass); $i++)
 	{
 		if (testchar2($rpass[$i])==false)
@@ -57,18 +75,18 @@ if ($_GET['query']=='setUserPass')		//ajax
 		}
 	}
 	$passhash = SHA1($rpass);
-	$db->query("UPDATE `users` SET pass='".$passhash."' WHERE id='".$_GET['id']."';");
+	$db->query("UPDATE `users` SET pass='".$passhash."' WHERE id='".$id."';");
 	exit;
 }	
 
-if ($_GET['query']=='delUser')		//ajax
+if ($query=='delUser')		//ajax
 {
-	$id = intval($_GET['id']);
+	$id = intval($id);
 	$db->query("DELETE FROM `users` WHERE id='".$id."';");
 	exit;
 }
 
-if ($_GET['query']=='clearDB')		//ajax
+if ($query=='clearDB')		//ajax
 {
 //удалить старые записи регистрации
 //V удалить устаревшие заказы и предложения
@@ -89,12 +107,12 @@ if ($_GET['query']=='clearDB')		//ajax
 		$line = $exchTabl->fetch_array();
 		$testTabl = $db->query("SELECT id FROM `salles` WHERE id='".$line['sallesid']."';");
 		if ($testTabl->num_rows > 0) $bdel = true;
-		$testTabl = $db->query("SELECT id FROM `order` WHERE id='".$line['orderid']."';");
+		$testTabl = $db->query("SELECT id FROM `orders` WHERE id='".$line['orderid']."';");
 		if ($testTabl->num_rows > 0) $bdel = true;
 		if ($bdel){
 			$db->query("DELETE FROM `exchange` WHERE id='".$line['id']."';");
 			$db->query("UPDATE `salles` SET state='0' WHERE id='".$line['sallesid']."';");	//пишем, что свободен(хотя надо бы поправить)
-			$db->query("UPDATE `order` SET state='0' WHERE id='".$line['orderid']."';"); 	//пишем, что свободен(хотя надо бы поправить)
+			$db->query("UPDATE `orders` SET state='0' WHERE id='".$line['orderid']."';"); 	//пишем, что свободен(хотя надо бы поправить)
 		}
 	}
 	
@@ -104,13 +122,13 @@ if ($_GET['query']=='clearDB')		//ajax
 	
 	$curtime = strtotime(date("Y-m-d H:i:s"));
 	//убрать старые предложения...
-	$table = $db->query("SELECT id,timeEnd FROM `order`;");
+	$table = $db->query("SELECT id,timeEnd FROM `orders`;");
 	if ($table!=false){
 		for ($i=0; $i<$table->num_rows; $i++){
 			$line = $table->fetch_array();
 			$ordtime = strtotime($line['timeEnd']);
 			if ($curtime >= $ordtime)
-				$db->query("DELETE FROM `order` WHERE id=".$line['id'].";");
+				$db->query("DELETE FROM `orders` WHERE id=".$line['id'].";");
 		}
 	}
 	//...и заказы
@@ -123,6 +141,7 @@ if ($_GET['query']=='clearDB')		//ajax
 				$db->query("DELETE FROM `salles` WHERE id=".$line['id'].";");
 		}
 	}
+	$table.close();
 	
 	//сносим сессии, которым больше 3 месяцев
 	$table = $db->query("SELECT session,lastdata FROM `sess`;");
@@ -134,6 +153,7 @@ if ($_GET['query']=='clearDB')		//ajax
 				$db->query("DELETE FROM `sess` WHERE session=".$line['session'].";");
 		}
 	}
+	$table.close();
 	
 	//сносим старые регистрации
 	$table = $db->query("SELECT session,lastdata FROM `regkey`;");
@@ -145,7 +165,8 @@ if ($_GET['query']=='clearDB')		//ajax
 				$db->query("DELETE FROM `sess` WHERE session=".$line['session'].";");
 		}
 	}
-	
+	$table.close();
+	$db.close();
 	exit;
 }
 
@@ -161,7 +182,7 @@ if ($user == 1)
 if (isset($_POST['infos']))    //not ajax
 {
 	/*запрос времени */
-	$queryStr = "INSERT INTO `order`(`login`, `time`, `timeStart`, `timeEnd`, `texts`, `contacts`) VALUES (";
+	$queryStr = "INSERT INTO `orders`(`login`, `time`, `timeStart`, `timeEnd`, `texts`, `contacts`) VALUES (";
 	$sdate = date("Y-m-d H:i:s");
 	$queryStr = $queryStr."'".$login."','".$sdate."', ";
 	
@@ -274,23 +295,23 @@ if (isset($_POST['message']))		//not ajax
 	exit;
 }
 
-if ($_GET['query']=='cancelOrder')		//ajax
+if ($query=='cancelOrder')		//ajax
 {	/*удалить запись order-заказ времени*/
-	$id = intval($_GET['id']);
-	$resl = $db->query("SELECT login FROM `order` WHERE id=".$id.";");
+	$id = intval($id);
+	$resl = $db->query("SELECT login FROM `orders` WHERE id=".$id.";");
 	if ($resl!= false)
 	{
 		$line = $resl->fetch_array();
 		if ($login==$line['login'])
-			$db->query("DELETE FROM `order` WHERE id=".$id.";");
+			$db->query("DELETE FROM `orders` WHERE id=".$id.";");
 	}
 	exit;
 }
 
 
-if ($_GET['query']=='deleteSeller')		//ajax
+if ($query=='deleteSeller')		//ajax
 {
-	$id = intval($_GET['id']);
+	$id = intval($id);
 	$resl = $db->query("SELECT login FROM `salles` WHERE id=".$id.";");
 	if ($resl != false)
 	{
@@ -303,9 +324,9 @@ if ($_GET['query']=='deleteSeller')		//ajax
 
 
 
-if ($_GET['query']=='setPass')		//ajax
+if ($query=='setPass')		//ajax
 {
-	$rpass = $_GET['newpass'];
+	$rpass = $newpass;
 	for ($i=0; $i<strlen($rpass); $i++)
 	{
 		if (testchar2($rpass[$i])==false)
@@ -334,6 +355,7 @@ function testCorrectInt($intg)
 function testCorrectDate($date)
 {
 //"Y-m-d H:i"
+	if (isset($date)) return false;
 	if (preg_match('(\b([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2})\b)', $date)) 
 		return true;
 	else 

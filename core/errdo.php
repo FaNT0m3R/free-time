@@ -8,12 +8,12 @@
 <body>
 <div class="content">
 <div class="header"> Free time </div>
-<?
+<?php
 if ($err=='time')
 {
 ?>
 	Неверный формат времени.<br>
-<?
+<?php
 }
 
 ?>

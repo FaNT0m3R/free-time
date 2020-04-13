@@ -1,4 +1,4 @@
-<?session_start();
+<?phpsession_start();
 $user = $_SESSION['user'];
 $login = $_SESSION['login'];
 
@@ -32,11 +32,11 @@ $tabl = $db->query("SELECT orderid FROM `exchange` WHERE sallesid=".$id.";");
 <body>
 <div class="content">
 <div class="header"> Free time </div>
-<?
+<?php
 
 for ($i=0; $i<$tabl->num_rows; $i++){
 	$sid = $tabl->fetch_array();
-	$ordt = $db->query("SELECT time,timeStart, timeEnd, texts,contacts FROM `order` WHERE id='".$sid['orderid']."';");
+	$ordt = $db->query("SELECT time,timeStart, timeEnd, texts,contacts FROM `orders` WHERE id='".$sid['orderid']."';");
 	if ($ordt!=false){
 		for ($j=0; $j<$ordt->num_rows; $j++){
 			$line = $ordt->fetch_array();
@@ -62,7 +62,7 @@ for ($i=0; $i<$tabl->num_rows; $i++){
 </body>
 </html>
 
-<?
+<?php
 $db->close();
 function getHourStr($hour)
 {

@@ -1,4 +1,4 @@
-<?
+<?php
 if ($secur != true)
 	exit;
 
@@ -17,42 +17,46 @@ if ($user != 2)
 <div class="content"  style="width:900px;">
 <div class="header"> Free times </div>
 <div class="leftp">
-	<div class="btn_lmenu" onclick="clickMenu('#pg_admin_home')" > 	 <?echo $login;?>	</div>
+	<div class="btn_lmenu" onclick="clickMenu('#pg_admin_home')" > 	 <?=$login;?>	</div>
 	<div class="btn_lmenu" onclick="clickMenu('#pg_orders');" > 	 Заказы		</div>
 	<div class="btn_lmenu" onclick="clickMenu('#pg_sellers');" > 	 Продавцы	</div>
 	<div class="btn_lmenu" onclick="clickMenu('#pg_messages')" > 	 Сообщения	</div>
 	<div class="btn_lmenu" onclick="clickMenu('#pg_users')" > 	 Пользователи	</div>
 	<div class="btn_lmenu" onclick="logout()" >				   Выйти </div>
 	<img src="imgs/clock.png" width="100%">
-	<a href="index2.php">Другая цветовая тема</a>
+	
 </div>
 <div class="rightp" style="width:650px;">
-	<div id="pg_admin_home" style="display: block;">
+	<div id="pg_admin_home" style="display: block;"> 
 		<table>
-		<? 
+		<?php 
 		$statTable = $db->query("SELECT name,valuei FROM `statistics` ORDER BY `id`;");
+		if ($statTable === false)
+			$linestat["valuei"] = "";
+		else
+			$linestat = $statTable->fetch_array();
 		?>
 		<tr> <td width=400>Всего пользователей: </td><td>
-		<?
+		<?php
 		$usrTable = $db->query("SELECT id FROM `users` WHERE bactiv=1;");
 		echo $usrTable->num_rows;
 		?></td></tr>
 		<tr> <td width=400>Заказов свободного времени: </td><td>
-		<?
-		$line = $statTable->fetch_array();
-		$usrTable = $db->query("SELECT id FROM `order` WHERE state='0';");
+		<?php
+		//$line = $statTable->fetch_array();
+		$usrTable = $db->query("SELECT id FROM `orders` WHERE state='0';");
 		echo $usrTable->num_rows;
 		
 		?></td></tr>
-		<tr> <td width=400>Предложений времени: </td><td><?
-		$line = $statTable->fetch_array();
+		<tr> <td width=400>Предложений времени: </td><td><?php
+		//$line = $statTable->fetch_array();
 		$usrTable = $db->query("SELECT id FROM `salles`;");
 		echo $usrTable->num_rows;
 		
 		?></td></tr>
-		<tr> <td width=400>Входов на сайт: </td><td><?
-		$line = $statTable->fetch_array();
-		echo $line['valuei'];
+		<tr> <td width=400>Входов на сайт: </td><td><?php
+		//$line = $statTable->fetch_array();
+		echo $linestat['valuei'];
 		?></td></tr>
 		</table>
 		<br><br>
@@ -71,11 +75,11 @@ if ($user != 2)
 	</div>
 	
 	
-<?/*** ЗАКАЗЫ ***************************************************************************************************/?>		
+<?php/*** ЗАКАЗЫ ***************************************************************************************************/?>		
 	<div id="pg_orders" style="display: none;">
 		<div class="subheader">Заказы</div>
 		<div id="orders_all">
-		<?
+		<?php
 		$ords = $db->query('SELECT id,time,timeStart, timeEnd, texts, contacts, comments,state FROM `order` WHERE "state"=0 ORDER BY time;');
 		if ($ords!=false)
 		{
@@ -107,11 +111,11 @@ if ($user != 2)
 	</div>
 	
 	
-<?/*** ПРОДАВЦЫ ***************************************************************************************************/?>	
+<?php/*** ПРОДАВЦЫ ***************************************************************************************************/?>	
 	<div id="pg_sellers" style="display: none;">
 		<div class="subheader">Продавцы</div>
 		<div id="orders_all">
-		<?
+		<?php
 		$ords = $db->query('SELECT id,login,time,timeStart, timeEnd, skill, position, contacts, comments,state FROM `salles` ORDER BY timeStart;');
 		if ($ords!=false)
 		{
@@ -148,7 +152,7 @@ if ($user != 2)
 	<div id="pg_messages" style="display: none;">
 	<div class="subheader">Сообщения </div>
 	
-	<?
+	<?php
 /*** СООБЩЕНИЯ ***************************************************************************************************/	
 	$mess = $db->query('SELECT  id, user, textmess, time, readed FROM `admmess`');
 	if ($mess!=false)
@@ -171,7 +175,7 @@ if ($user != 2)
 	?>
 	</div>
 	
-<?/*** ПОЛЬЗОВАТЕЛИ ***************************************************************************************************/?>	
+<?php/*** ПОЛЬЗОВАТЕЛИ ***************************************************************************************************/?>	
 	<div id="pg_users" style="display: none;">
 	<div class="subheader">Пользователи </div>
 	
@@ -181,7 +185,7 @@ if ($user != 2)
 	<col valign="top">
 	<tr><td><b>Логин</b></td><td><b>e-mail</b></td><td><b>Дата регистрации</b></td><td><b>Последний вход</b></td></tr>
 	
-	<?
+	<?php
 	$mess = $db->query('SELECT  id,login, email, badmin, bactiv, dataregistr, datalast FROM `users`');
 	if ($mess!=false)
 	{
@@ -283,7 +287,7 @@ function clearDB()
 	req.onreadystatechange = function() { 
 		if (req.readyState == 4) {
 			if(req.status == 200)
-				location = 'index.php';
+	 			location = 'index.php';
 				//alert(req.responseText);
 			else
 				alert('Произошла ошибка');
@@ -306,7 +310,7 @@ function changePass()
 			if(req.status == 200) {
 				if (req.responseText!="error")
 					alert("Пароль измененён");
-				else
+	 			else
 					alert("Произошла ошибка. Пароль не измененён.");
 			}
 			else
@@ -391,7 +395,7 @@ function getXmlHttp(){
 
 </body>
 </html>
-<?
+<?php
 exit;
 
 

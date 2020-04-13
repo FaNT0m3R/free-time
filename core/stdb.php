@@ -1,11 +1,12 @@
-<?//èíèöèàëèçàöèÿ DB òóò
-$name_db = "user2031337_freetime";
-$login_db = "freetimer";
-$passwd_db = "rPtTasdh355";
+<?php //Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ DB Ñ‚ÑƒÑ‚
+
+$login_db = "freetime";
+$passwd_db = "***************";
+$name_db = "freetime";
 
 $db = mysqli_connect("localhost",$login_db,$passwd_db,$name_db);
-if ($db->connect_errno) {
+if (!$db) {
 	echo $strerrdb;
 	exit();
-} 	
+}
 ?>

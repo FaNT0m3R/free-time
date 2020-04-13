@@ -1,4 +1,4 @@
-<?/*
+<?php /*
 отвечает за диалог авторизации, регистрации и проверку логина-пароля при входе
 
 $_GET[page]=reg/login
@@ -10,6 +10,9 @@ $_GET[err]=
   4 - email не корректен
   5 - email уже зарегистрирован в системе
 */
+const LOGIN = 0;
+const REG = 1;
+
 if (!isset($secur))
 	if(!$secur)
 		exit;
@@ -88,9 +91,21 @@ if ((isset($_POST["login"])) && (isset($_POST["password"])))
 } 
 
 
-
 if ($user==0)
 {
+
+	
+	if (isset($_GET["page"]))
+		if ($_GET["page"] == "reg")
+			$page = REG;
+		else $page = LOGIN;
+	else $page = LOGIN;
+	
+	
+	if (isset($_GET["err"]))
+		$err = $_GET["err"];
+	else
+		$err = 0;
 ?>
 
 <html>
@@ -107,19 +122,22 @@ if ($user==0)
 <div class="leftp">
 	<div class="button btn_lmenu" onclick="showLogin()"> Войти </div>
 	<div class="button btn_lmenu" onclick="showRegister()"> Регистрация </div>
-	<img src="imgs/clock2.jpg" width="100%">
+	<img src="imgs/clock.jpg" width="100%">
 </div>
 <div class="rightp">
-	<?	if ($_GET["page"]=="reg"){?>
-	<div id="flogin" style="display:none;">
-	<? }else{ ?>
-	<div id="flogin" style="display:block;">
-	<?}?>
+	<?php
+	if($page == REG) {?>
+		<div id="flogin" style="display:none;">
+	<?php }
+	else 
+	{?>
+		<div id="flogin" style="display:block;">
+	<?php } ?>
 	 
 		На этом сайте вы можете купить или продать своё время
 		<form style="font-size:14px;" action="index.php" method="POST">
 		<div style="margin:30px; text-align:center;"> 
-		<? 
+		<?php 
 		if ($errlogin)
 			echo '<div style="padding:10px;"> Неверный логин или пароль. </div>';
 		?>
@@ -139,11 +157,11 @@ if ($user==0)
 		</form>
 	</div>
 	
-	<?	if ($_GET["page"]=="reg"){?>
+	<?php	if ($page==REG){?>
 	<div id="fregister" style="display:block;">
-	<? }else{ ?>
+	<?php }else{ ?>
 	<div id="fregister" style="display:none;">
-	 <?}?>
+	 <?php } ?>
 		<div class="subheader">Регистрация</div>
 		<form style="font-size:14px;" action="register.php" method="POST">
 		<table style="text-align:center; margin:30px; margin-left:50px;" >
@@ -151,14 +169,14 @@ if ($user==0)
 		    <td style="text-align:right;"> Логин </td>
 			<td> <input type="text" name="rlogin" onkeypress="testLog()"></td>
 			<td style="width:200px; height:40px; font-size:12px; color:#888;">
-				<?if ($_GET["err"]==1)
+				<?php if ($err==1)
 					echo '<span id="warnlog" style="display:block;">';
 				else
 					echo '<span id="warnlog" style="display:none;">';
 				echo 'допустимы любые буквы, цифры и нижнее подчёркивание</span>';?>
 				
 				
-				<?if($_GET["err"]==2){
+				<?php if($err==2){
 				echo '<span id="warnlog2" style="display:block;">';
 				} else {
 				echo '<span id="warnlog2" style="display:none;">';
@@ -171,7 +189,7 @@ if ($user==0)
 		    <td style="text-align:right;"> Пароль</td>
 		    <td> <input type="password" name="rpassword" onkeypress="testPas()"></td>
 			<td style="width:200px; height:60px; font-size:12px; color:#888;">
-				<?if ($_GET["err"]==3)
+				<?php if ($err==3)
 					echo '<span id="warnpas" style="display:block;">';
 				else
 					echo '<span id="warnpas" style="display:none;">';
@@ -188,13 +206,13 @@ if ($user==0)
 		    <td style="text-align:right;"> Ваш e-mail</td>
 		    <td> <input type="e-mail" name="remail" onkeyup="testEmail()" onfocus="testEmail()"></td>
 			<td style="font-size:12px; color:#888;"> 
-				<?if ($_GET["err"]==5)
+				<?php if ($err==5)
 					echo '<span id="warnemail" style="display:block;">';
 				 else
 					echo '<span id="warnemail" style="display:none;">';
 				echo 'Этот e-mail уже есть в системе</span>';
 				
-				if($_GET["err"]==4)
+				if($err==4)
 					echo '<span id="warnemail2" style="display:block;">';
 				else
 					echo '<span id="warnemail2" style="display:none;">';
@@ -209,26 +227,24 @@ if ($user==0)
 </div>
 </div>
 
-<?if ($_GET["page"]=="reg"){?>
+<?php if ($page==REG){?>
 <script>
 var oldplace3 = "#fregister";
 </script>
-<?} else{ ?>
+<?php } else{ ?>
 <script>
 var oldplace3 = "#flogin";
 </script>
-<?}?>
+<?php }?>
 <script language="javascript" src="js/auth.js"></script>
 <script language="javascript" src="js/jquery-3.0.0.js"> </script>
 </body>
 </html>
-<?
+<?php
 exit;
 }
-?>
 
 
-<?
 function testLogin($logt){
 	if (strlen($logt) > 250)
 		return false;
@@ -250,8 +266,5 @@ function testPass($pas){
 	}
 	return true;
 }
-
-
-
 
 ?>

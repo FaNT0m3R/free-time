@@ -1,4 +1,4 @@
-<? 
+<?php 
 /*
 Отвечает за регистрацию пользователя
 
@@ -22,6 +22,10 @@
 
 */
 
+
+const MAX_LEN = 255;
+
+
 /* инициалиация переменных  */
 $debug = 1;
 if ($debug!=1){
@@ -39,20 +43,22 @@ else{
 	$errINSERT = "Ошибка выполнения INSERT";
 }
 
-$site = "www.free-time.by";
+$site = "https://bl123.000webhostapp.com";
 
 
 $login = "";
 
 /****  создание временного кода и отправка на мыло   ***********************************/
+
+//проверка кооректности ввода
 if (isset( $_POST["rlogin"]))
 {
 	include './core/func.php';
 	
 	$rlogin = htmlspecialchars($_POST["rlogin"]);
-	if (strlen($rlogin) > 250)
+	if (strlen($rlogin) > MAX_LEN)
 	{
-		header('Location:http://'.$site.'/index.php?page=reg&err=1');
+		header('Location:'.$site.'/index.php?page=reg&err=1');
 		exit;
 	}
 	
@@ -60,15 +66,15 @@ if (isset( $_POST["rlogin"]))
 	{
 		if (testchar($rlogin[$i])==false)
 		{
-			header('Location:http://'.$site.'/index.php?page=reg&err=1');
+			header('Location:'.$site.'/index.php?page=reg&err=1');
 			exit;
 		}
 	}
 	
 	$rpassword = htmlspecialchars($_POST["rpassword"]);
-	if (strlen($rpassword) > 250)
+	if (strlen($rpassword) > MAX_LEN)
 	{
-		header('Location:http://'.$site.'/index.php?page=reg&err=3');
+		header('Location:'.$site.'/index.php?page=reg&err=3');
 		exit;
 	}
 
@@ -76,70 +82,83 @@ if (isset( $_POST["rlogin"]))
 	{
 		if (testchar2($rpassword[$i])==false)
 		{
-			header('Location:http://'.$site.'/index.php?page=reg&err=3');
+			header('Location:'.$site.'/index.php?page=reg&err=3');
 			exit;
 		}
 	}
 
 	$remail = htmlspecialchars($_POST["remail"]);
-	if (strlen($remail) > 250)
+	if (strlen($remail) > MAX_LEN)
 	{
-		header('Location:http://'.$site.'e/index.php?page=reg&err=4');
+		header('Location:'.$site.'/index.php?page=reg&err=4');
 		exit;
 	}
 	if (!(filter_var($remail,FILTER_VALIDATE_EMAIL)))
 	{
-		header('Location:http://'.$site.'/index.php?page=reg&err=4');
+		header('Location:'.$site.'/index.php?page=reg&err=4');
 		exit;
 	}
 
-	include './core/stdb.php';
-	
+	include './core/stdb.php'; 
+
+
+//проверка, есть ли в базе с таким логином и email	
 	$resl_serv = $db->query("SELECT * FROM users WHERE `login`='".$rlogin."';");
-	if ($resl_serv == false)
+	if ($resl_serv === false)
 	{
-		echo $errSELECT;
+		echo $errSELECT." ".$db->error;
 		$db->close();
 		exit();
 	}
 	if ($resl_serv->num_rows!=0)
 	{
-		header('Location:http://'.$site.'/index.php?page=reg&err=2');
+		header('Location:'.$site.'/index.php?page=reg&err=2');
 		$db->close();
 		exit;
 	}
-
-	$resl_serv = $db->query("SELECT * FROM users WHERE email='".$remail."';");
-	if ($resl_serv == false)
-	{
-		echo $errSELECT;
-		$db->close();
-		exit();
-	}
-	if ($resl_serv->num_rows!=0)
-	{
-		header('Location:http://'.$site.'/index.php?page=reg&err=5');
-		$db->close();
-		exit;
-	}
+	$resl_serv->close();
 	
+	$resl_serv = $db->query("SELECT * FROM users WHERE email='".$remail."';");
+	if ($resl_serv === false)
+	{
+		echo $errSELECT." ".$db->error;
+		$db->close();
+		exit();
+	}
+	if ($resl_serv->num_rows!=0)
+	{
+		header('Location:'.$site.'/index.php?page=reg&err=5');
+		$db->close();
+		exit;
+	}
+	$resl_serv->close(); 
+	
+	
+//всё ок, добавление нового юзера
 	$date = date("Y-m-d H:i:s");
 	$passhash = SHA1($rpassword);
 	$resl_serv = $db->query("INSERT INTO users VALUES (NULL,'$rlogin','$passhash','$remail',false,false,'$date','$date',0);");
 	if ($resl_serv == false)
 	{
-		echo $errINSERT;
+		echo $errINSERT." ".$db->error;
 		$db->close();
 		exit;
 	}
+	
 	$regkey = mt_rand(1000000, 9999999);
 	$resl_serv = $db->query("INSERT INTO regkeys VALUES ('$regkey', '$rlogin','$date');");
+	if ($resl_serv == false)
+	{
+		echo $errINSERT." ".$db->error;
+		$db->close();
+		exit;
+	}
 	
 	$url = $site.'/register.php?rcodereg='.$regkey;
 	$title = 'Регистрация на '.$site;
 	$message = 'Для активации Вашего акаунта пройдите по ссылке <a href="'. $url .'">'. $url .'</a>';
-	if (!sendMessageMail($remail, 'Регистрация на http://'.$site.' <no-reply@free-time.by>', $title, $message))
-		header('Location:http://'.$site.'/index.php?page=reg&err=4');
+	if (!sendMessageMail($remail, 'Регистрация на '.$site.' <no-reply@bl123.000webhostapp.com>', $title, $message))
+		header('Location:'.$site.'/index.php?page=reg&err=4');
 	$db->close();
 	?>
 	
@@ -156,8 +175,8 @@ if (isset( $_POST["rlogin"]))
 Перейдите по ней и регистрация будет завершена.
 </div>
 </body>
-	
-	<?
+</html>	
+	<?php
 	exit;
 }
 else
@@ -176,28 +195,31 @@ if (isset( $_GET["rcodereg"]))
 	
 	if ($resl_serv->num_rows!=1)
 	{
-		header('Location:http://'.$site.'/index.php');
+		header('Location:'.$site.'/index.php');
 		$db->close();
 		exit;
 	}
 	
 	$lineingo = $resl_serv->fetch_array();
 	$rlogin = $lineingo[1];
+	$resl_serv->close();
 	
 	//всё ок, код совпадает, удаляем код из таблицы кодов, меняем в users bactiv на true
 	$resl_serv = $db->query("UPDATE users SET bactiv=true WHERE login='$rlogin' LIMIT 1");
-	if ($resl_serv == false)
+	if ($resl_serv === false)
 	{
 		$db->close();
 		exit();
 	}
 	
+	
 	$resl_serv = $db->query("DELETE FROM regkeys WHERE login='$rlogin'");
-	if ($resl_serv == false)
+	if ($resl_serv === false)
 	{
 		$db->close();
 		exit();
 	}
+	
 ?>
 <html>
 <head>
@@ -210,7 +232,8 @@ if (isset( $_GET["rcodereg"]))
 Регистрация успешно завершена. Теперь можете перейти 
 на <a href="index.php">главную страницу</a> и войти в свой аккаунт.
 </body>
-<?
+</html>
+<?php
 	$db->close();
 }
 
